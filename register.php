@@ -8,7 +8,7 @@
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css" integrity="sha384-9gVQ4dYFwwWSjIDZnLEWnxCjeSWFphJiwGPXr1jddIhOegiu1FwO5qRGvFXOdJZ4" crossorigin="anonymous">
     <link rel="stylesheet" href="css/index.css" type="text/css">
-    <title>Login</title>
+    <title>Register</title>
 </head>
 <body>
 <div id="wrapper">
@@ -23,11 +23,11 @@
                 <label for="InputPassword1">Password</label>
                 <input type="password" class="form-control" id="InputPassword1" placeholder="Password" name="InputPassword">
             </div>
-            <div class="form-check">
-                <input type="checkbox" class="form-check-input" id="Check1" name="InputCheck">
-                <label class="form-check-label" for="Check1">Check me out</label>
+            <div class="form-group">
+                <label for="InputPassword2">Confirm Password</label>
+                <input type="password" class="form-control" id="InputPassword2" placeholder="Password" name="InputPassword2">
             </div>
-            <button type="submit" class="btn btn-primary" name="submitButton">Submit</button>
+            <button type="submit" class="btn btn-primary" name="submitButton">Register</button>
         </form>
     </div>
 </div>
@@ -42,7 +42,12 @@
 if(isset($_POST["submitButton"])){
     $email = $_POST["InputEmail1"];
     $password = $_POST["InputPassword"];
+    $password2 = $_POST["InputPassword2"];
+    if ($password == $password2){
         require "DatabaseOperations.php";
         $db = new DatabaseOperations();
-        $db->LoginUser($email, $password);
+        $db->RegisterUser($email, $password);
+    }else{
+        echo"Fuck";
+    }
 }
