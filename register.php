@@ -19,7 +19,7 @@
                 <input type="email" class="form-control" id="InputEmail1" aria-describedby="emailHelp" placeholder="Enter email" name="InputEmail1">
                 <small id="emailHelp" class="form-text text-muted">We'll never share your email with anyone else.</small>
             </div>
-            <div class="form-group">
+            <div class="form-group" id="PasswordDiv1">
                 <label for="InputPassword1">Password</label>
                 <input type="password" class="form-control" id="InputPassword1" placeholder="Password" name="InputPassword">
             </div>
@@ -48,6 +48,7 @@ if(isset($_POST["submitButton"])){
         $db = new DatabaseOperations();
         $db->RegisterUser($email, $password);
     }else{
-        echo"Fuck";
+        echo"<script>document.getElementById(\"PasswordDiv1\").className += \" has-error has-feedback\";</script>";
+        echo"<script>document.getElementById(\"InputPassword1\").className += \" glyphicon glyphicon-remove form-control-feedback\";</script>";
     }
 }

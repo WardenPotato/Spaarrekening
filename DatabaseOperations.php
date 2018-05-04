@@ -58,12 +58,17 @@ var $dbpass = 'root';
         $retval = mysqli_query( $conn, $sql );
 
         if (mysqli_num_rows($retval) == 1){
-            header("Location: rekening.php");
+            mysqli_close($conn);
+            return true;
         }
         else {
-            echo"Wrong login";
+            mysqli_close($conn);
+            return false;
         }
+    }
+    function GetBalance($email, $password){
+        if($this->LoginUser($email, $password) == true){
 
-        mysqli_close($conn);
+        }
     }
 }

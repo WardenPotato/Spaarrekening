@@ -1,3 +1,29 @@
+<?php
+session_start();
+require "DatabaseOperations.php";
+$db = new DatabaseOperations();
+$domain = ($_SERVER['HTTP_HOST'] != 'localhost') ? $_SERVER['HTTP_HOST'] : false;
+
+if(isset($_POST["submitButton"])){
+    $email = $_POST["InputEmail1"];
+    $password = $_POST["InputPassword"];
+    //$db = new DatabaseOperations();
+    if (isset($_POST["InputCheck"]) and $db->LoginUser($email, $password) == true) {
+        //session_start();
+        $_SESSION['email'] = $email;
+        $_SESSION['pwd'] = $password;
+        setcookie('login_email', $email, time()+60*60*24*365, '/', $domain, false);
+        setcookie('login_password', $password, time()+60*60*24*365, '/', $domain, false);
+        header("Location: rekening.php");
+    }elseif($db->LoginUser($email, $password) == true){
+        $_SESSION['email'] = $email;
+        $_SESSION['pwd'] = $password;
+        header("Location: rekening.php");
+    }else{
+        echo"wrong login";
+    }
+}
+?>
 <!doctype html>
 <html lang="en">
 <head>
@@ -39,10 +65,24 @@
 </body>
 </html>
 <?php
-if(isset($_POST["submitButton"])){
-    $email = $_POST["InputEmail1"];
-    $password = $_POST["InputPassword"];
-        require "DatabaseOperations.php";
-        $db = new DatabaseOperations();
-        $db->LoginUser($email, $password);
+
+if(isset($_SESSION['email']) and isset($_SESSION['pwd'])){
+
+    //$db = new DatabaseOperations();
+    if ($db->LoginUser($_SESSION['email'], $_SESSION['pwd']) == true) {
+        header("Location: rekening.php");
+        //echo"Session check triggered";
+    }else{
+        echo"Session detection triggered without right login";
+    }
+}
+if(isset($_COOKIE['login_email']) and isset($_COOKIE['login_password'])){
+    if ($db->LoginUser($_COOKIE['login_email'], $_COOKIE['login_password']) == true) {
+        $_SESSION['email'] = $_COOKIE['login_email'];
+        $_SESSION['pwd'] = $_COOKIE['login_password'];
+        header("Location: rekening.php");
+        //echo"Session cookie check triggered";
+    }else{
+        echo"Session cookie detection triggered without right login";
+    }
 }
