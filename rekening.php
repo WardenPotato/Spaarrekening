@@ -20,7 +20,7 @@ $User = new Users();
     <body>
     <div id="wrapper">
         <div id="content" class="border border-secondary rounded">
-            <h1>Hello, world!</h1>
+            <h1>Placeholder Hello user</h1>
             <a href="logout.php" role="button" class="btn btn-danger">Logout</a>
             <!-- Button trigger modal -->
             <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#createAccountModal">
@@ -103,7 +103,7 @@ $User = new Users();
                                 <span aria-hidden="true">&times;</span>
                             </button>
                         </div>
-                        <form method="post">
+                        <form method="post" onsubmit="return confirm('Do you really want to submit the form?');">
                             <div class="form-group">
                                 <label for="exampleFormControlSelect1">Account</label>
                                 <select class="form-control" id="exampleFormControlSelect1" name="editAccountSelection1">
