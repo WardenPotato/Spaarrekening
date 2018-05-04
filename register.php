@@ -28,6 +28,7 @@
                 <input type="password" class="form-control" id="InputPassword2" placeholder="Password" name="InputPassword2">
             </div>
             <button type="submit" class="btn btn-primary" name="submitButton">Register</button>
+            <a class="btn btn-secondary" href="index.php" role="button">Back</a>
         </form>
     </div>
 </div>
@@ -44,9 +45,10 @@ if(isset($_POST["submitButton"])){
     $password = $_POST["InputPassword"];
     $password2 = $_POST["InputPassword2"];
     if ($password == $password2){
-        require "DatabaseOperations.php";
-        $db = new DatabaseOperations();
-        $db->RegisterUser($email, $password);
+        require "Users.php";
+        $Users = new Users();
+        $Users->RegisterUser($email, $password);
+        ?> <script>window.location.replace("index.php");</script> <?php
     }else{
         echo"<script>document.getElementById(\"PasswordDiv1\").className += \" has-error has-feedback\";</script>";
         echo"<script>document.getElementById(\"InputPassword1\").className += \" glyphicon glyphicon-remove form-control-feedback\";</script>";

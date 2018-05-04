@@ -23,7 +23,7 @@ if(session_status() === PHP_SESSION_ACTIVE and isset($_COOKIE['login_email']) an
     //setcookie('login_email', "", time()-1);
     setcookie('login_password', FALSE, time()-100, '/', $domain, false);
     header("Location: index.php");
-    echo"If triggered";
+    //echo"If triggered";
 }else{
     $_SESSION = array();
 
@@ -37,7 +37,7 @@ if(session_status() === PHP_SESSION_ACTIVE and isset($_COOKIE['login_email']) an
 
     session_destroy();
     header("Location: index.php");
-    echo"Else triggered";
+    //echo"Else triggered";
 }
 ?>
 <!doctype html>

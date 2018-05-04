@@ -1,25 +1,25 @@
 <?php
 session_start();
-require "DatabaseOperations.php";
-$db = new DatabaseOperations();
+require "Users.php";
+$User = new Users();
 $domain = ($_SERVER['HTTP_HOST'] != 'localhost') ? $_SERVER['HTTP_HOST'] : false;
 
 if(isset($_POST["submitButton"])){
     $email = $_POST["InputEmail1"];
     $password = $_POST["InputPassword"];
     //$db = new DatabaseOperations();
-    if (isset($_POST["InputCheck"]) and $db->LoginUser($email, $password) == true) {
-        //session_start();
+    if (isset($_POST["InputCheck"]) and $User->LoginUser($email, $password) == true) {
         $_SESSION['email'] = $email;
         $_SESSION['pwd'] = $password;
         setcookie('login_email', $email, time()+60*60*24*365, '/', $domain, false);
         setcookie('login_password', $password, time()+60*60*24*365, '/', $domain, false);
         header("Location: rekening.php");
-    }elseif($db->LoginUser($email, $password) == true){
+    }elseif($User->LoginUser($email, $password) == true){
         $_SESSION['email'] = $email;
         $_SESSION['pwd'] = $password;
         header("Location: rekening.php");
     }else{
+        error_log( "Login failed using email: $email and password: $password" );
         echo"wrong login";
     }
 }
@@ -51,10 +51,12 @@ if(isset($_POST["submitButton"])){
             </div>
             <div class="form-check">
                 <input type="checkbox" class="form-check-input" id="Check1" name="InputCheck">
-                <label class="form-check-label" for="Check1">Check me out</label>
+                <label class="form-check-label" for="Check1">Remember me</label>
             </div>
             <button type="submit" class="btn btn-primary" name="submitButton">Submit</button>
+            <a class="btn btn-secondary" href="register.php" role="button">Register</a>
         </form>
+
     </div>
 </div>
 <!-- Optional JavaScript -->
@@ -69,7 +71,7 @@ if(isset($_POST["submitButton"])){
 if(isset($_SESSION['email']) and isset($_SESSION['pwd'])){
 
     //$db = new DatabaseOperations();
-    if ($db->LoginUser($_SESSION['email'], $_SESSION['pwd']) == true) {
+    if ($User->LoginUser($_SESSION['email'], $_SESSION['pwd']) == true) {
         header("Location: rekening.php");
         //echo"Session check triggered";
     }else{
@@ -77,10 +79,10 @@ if(isset($_SESSION['email']) and isset($_SESSION['pwd'])){
     }
 }
 if(isset($_COOKIE['login_email']) and isset($_COOKIE['login_password'])){
-    if ($db->LoginUser($_COOKIE['login_email'], $_COOKIE['login_password']) == true) {
+    if ($User->LoginUser($_COOKIE['login_email'], $_COOKIE['login_password']) == true) {
         $_SESSION['email'] = $_COOKIE['login_email'];
         $_SESSION['pwd'] = $_COOKIE['login_password'];
-        header("Location: rekening.php");
+        ?> <script>window.location.replace("rekening.php");</script> <?php
         //echo"Session cookie check triggered";
     }else{
         echo"Session cookie detection triggered without right login";
