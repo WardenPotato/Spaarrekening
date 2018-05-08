@@ -16,6 +16,25 @@ $User = new Users();
               crossorigin="anonymous">
         <link rel="stylesheet" href="css/index.css" type="text/css">
         <title>Account</title>
+        <script>
+            window.onload=function() {
+                var form = document.forms.namedItem("EditForm");
+                form.addEventListener('submit', function (ev) {
+
+                    var request = new XMLHttpRequest();
+                    request.open("POST", "form_edit.php");
+
+                    request.onreadystatechange = function () {//Call a function when the state changes.
+                        if (request.readyState == 4 && request.status == 200) {
+                            document.getElementById("accountdiv").innerHTML = request.responseText;
+                            //alert(request.responseText);
+                        }
+                    }
+                    request.send(new FormData(form));
+                    ev.preventDefault();
+                }, false)
+            }
+        </script>
     </head>
     <body>
     <div id="wrapper">
@@ -103,7 +122,7 @@ $User = new Users();
                                 <span aria-hidden="true">&times;</span>
                             </button>
                         </div>
-                        <form method="post" onsubmit="return confirm('Do you really want to submit the form?');">
+                        <form method="post" enctype="multipart/form-data" name="EditForm">
                             <div class="form-group">
                                 <label for="exampleFormControlSelect1">Account</label>
                                 <select class="form-control" id="exampleFormControlSelect1" name="editAccountSelection1">
@@ -132,7 +151,7 @@ $User = new Users();
                             </div>
                             <div class="modal-footer">
                                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                                <button type="submit" class="btn btn-primary" name="editAccountSubmit">Do</button>
+                                <button type="submit" class="btn btn-primary" id="SubmitEdit" name="editAccountSubmit">Do</button>
                             </div>
                         </form>
                     </div>
@@ -155,10 +174,11 @@ $User = new Users();
     </html>
 <?php
 
-//Prints all accounts of logged in user and checks if they are logged in
+//Prints all accounts of logged in user and checks if you are logged in
 if(isset($_SESSION['email']) and isset($_SESSION['pwd'])){
     if ($User->LoginUser($_SESSION['email'], $_SESSION['pwd']) == true) {
         $userid = $User->GetUserID($_SESSION['email'], $_SESSION['pwd']);
+        echo"<div id='accountdiv'>";
         echo"Accounts: <br>";
         foreach ($User->GetAccounts($userid) as $key => $value) {
             foreach($value as $key => $var){
@@ -166,6 +186,7 @@ if(isset($_SESSION['email']) and isset($_SESSION['pwd'])){
             }
             echo"<br>";
         }
+        echo"</div>";
     }else{
         ?> <script>window.location.replace("index.php");</script> <?php
     }
@@ -180,26 +201,7 @@ if(isset($_POST["AccountSubmit"]) and isset($_POST["AccountName"])){
     ?> <script>window.location.replace("rekening.php");</script> <?php
 }
 //Runs if edit account button is pressed
-if(isset($_POST["editAccountSubmit"]) and isset($_POST["editAccountSelection1"]) and isset($_POST["editAccountSelection2"]) and isset($_POST["editAccount"])){
-    $method = $_POST["editAccountSelection2"];
-    $account = $_POST["editAccountSelection1"];
-    $amount = $_POST["editAccount"];
-    $userid = $User->GetUserID($_SESSION['email'], $_SESSION['pwd']);
-    echo $method . "<br>";
-    echo $amount . "<br>";
-    echo $account . "<br>";
-    switch ($method) {
-        case "Withdraw":
-            $User->RemoveBalance($amount, $account);
-            break;
-        case "Deposit":
-            $User->AddBalance($amount, $account);
-            break;
-        case "Set":
-            $User->SetBalance($amount, $account);
-            break;
-    }
-}
+
 //Runs if useraccount delete button is pressed
 if(isset($_POST["accountDeleteSubmit"])){
     $userid = $User->GetUserID($_SESSION['email'], $_SESSION['pwd']);
