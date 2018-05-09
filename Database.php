@@ -95,7 +95,7 @@ namespace Database {
         public function createAccount(int $loginID, string $name): int
         {
             $stmt = $this->pdo->prepare("INSERT INTO accounts (idlogin, balance, name) VALUES(:loginID, 0, :accountname)");
-            return $stmt->execute(['loginID' => $loginID, 'accountname' => $name]) ? $stmt->fetch(PDO::FETCH_ASSOC)["account_id"] : false;
+            return $stmt->execute(['loginID' => $loginID, 'accountname' => $name]) ? $this->pdo->lastInsertId() : false;
         }
     }
 }

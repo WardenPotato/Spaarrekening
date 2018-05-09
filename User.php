@@ -63,7 +63,7 @@ namespace User {
         public function addAccount(string $name): void
         {
             $accountID = $this->database->createAccount($this->ID, $name);
-            array_push($this->accounts, new BankAccount($accountID, $name, 0, $this->ID));
+            $this->accounts[$accountID] = new BankAccount($accountID, $name, 0, $this->ID);
         }
 
         public function getAccounts(): array

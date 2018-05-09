@@ -54,7 +54,7 @@ $User = new \User\User($userID);
                                 <label for="inputAccountName">Account Name</label>
                                 <input type="text" class="form-control" id="inputAccountName"
                                        aria-describedby="accountNameHelp"
-                                       placeholder="Enter a name" name="AccountName">
+                                       placeholder="Enter a name" name="AccountName" required>
                                 <small id="accountNameHelp" class="form-text text-muted">Use a descriptive name.
                                 </small>
                             </div>
@@ -122,7 +122,7 @@ $User = new \User\User($userID);
                         <form method="post" enctype="multipart/form-data" name="EditForm" id="FormEdit">
                             <div class="form-group">
                                 <label for="exampleFormControlSelect1">Account</label>
-                                <select class="form-control" id="exampleFormControlSelect1" name="editAccountSelection1">
+                                <select class="form-control" id="exampleFormControlSelect1" name="editAccountSelection1" required>
                                     <?php
                                         //Get all accounts and echo them as options
                                         $accounts = $User->getAccounts();
@@ -135,7 +135,7 @@ $User = new \User\User($userID);
                             </div>
                             <div class="form-group">
                                 <label for="exampleFormControlSelect2">Action</label>
-                                <select class="form-control" id="exampleFormControlSelect2" name="editAccountSelection2">
+                                <select class="form-control" id="exampleFormControlSelect2" name="editAccountSelection2" required>
                                     <option value="Withdraw">Withdraw</option>
                                     <option value="Deposit">Deposit</option>
                                 </select>
@@ -143,7 +143,7 @@ $User = new \User\User($userID);
                             <div class="form-group">
                                 <label for="inputEditAccount">Amount</label>
                                 <input type="text" class="form-control" id="inputEditAccount"
-                                       placeholder="Enter a amount" name="editAccount">
+                                       placeholder="Enter a amount" name="editAccount" required>
                             </div>
                         </form>
                     </div>
