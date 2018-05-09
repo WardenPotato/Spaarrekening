@@ -7,6 +7,7 @@
  */
 namespace User {
 
+    require_once "Database.php";
     use Database\DatabaseOperations;
 
     interface IID
@@ -19,21 +20,24 @@ namespace User {
         public function getName(): string;
     }
 
-    class User implements IID, IName
+    class User implements IID
     {
         private $ID;
         private $email;
-        private $name;
         private $accounts;
         private $database;
+        private $firstName;
+        private $lastName;
 
-        public function __construct(int $ID, string $email, string $name)
+        public function __construct(int $ID)
         {
             $this->ID = $ID;
-            $this->email = $email;
-            $this->name = $name;
+            $this->accounts = array();
             $this->database = new DatabaseOperations();
+            $this->email = $this->database->getEmail($this->ID);
             $this->loadAccounts();
+            $this->firstName = $this->database->getFirstName($this->ID);
+            $this->lastName = $this->database->getLastName($this->ID);
         }
 
         public function getID(): int
@@ -46,9 +50,14 @@ namespace User {
             return $this->email;
         }
 
-        public function getName(): string
+        public function getFirstName(): string
         {
-            return $this->name;
+            return $this->firstName;
+        }
+
+        public function getLastName(): string
+        {
+            return $this->lastName;
         }
 
         public function addAccount(string $name): void
@@ -62,17 +71,28 @@ namespace User {
             return $this->accounts;
         }
 
+        public function editAccount($accountID): BankAccount
+        {
+            return $this->accounts[$accountID];
+        }
+
         public function deleteUser(): void
         {
             $this->database->deleteUser($this->ID);
         }
 
+        public function printAccounts(): void
+        {
+            echo"Accounts: <br>";
+            foreach($this->accounts as $account) {
+                $account->printDetails();
+            }
+        }
+
         private function loadAccounts(): void
         {
-            foreach ($this->database->getAccounts($this->ID) as $index => $account) {
-                foreach($account as $key => $value){
-                    array_push($this->accounts, new BankAccount($key["account_id"], $key["name"], $key["balance"], $key["idlogin"]));
-                }
+            foreach ($this->database->getAccounts($this->ID) as $value => $key) {
+                $this->accounts[intval($key["account_id"])] = new BankAccount(intval($key["account_id"]), $key["name"], intval($key["balance"]), intval($key["idlogin"]));
             }
         }
     }
@@ -81,7 +101,7 @@ namespace User {
     {
         private $ID;
         private $name;
-        private $balance = 0;
+        private $balance;
         private $userID;
         private $database;
 
@@ -97,7 +117,7 @@ namespace User {
         public function deposit(int $amount): void
         {
             $this->balance += $amount;
-            $this->database->setBalance($this->balance);
+            $this->database->setBalance($this->balance, $this->ID);
         }
 
         public function withdraw(int $amount): void
@@ -107,7 +127,7 @@ namespace User {
             }
 
             $this->balance -= $amount;
-            $this->database->setBalance($this->balance);
+            $this->database->setBalance($this->balance, $this->ID);
         }
 
         public function getID(): int
@@ -123,6 +143,14 @@ namespace User {
         public function getBalance(): int
         {
             return $this->balance;
+        }
+
+        public function printDetails(): void
+        {
+            echo"$this->ID ";
+            echo"$this->name ";
+            echo"$this->balance ";
+            echo"$this->userID<br>";
         }
     }
 }

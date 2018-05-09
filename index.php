@@ -1,30 +1,31 @@
 <?php
-session_start();
-require "Users.php";
-$User = new Users();
+//Include script which checks if the user is logged in
+include_once "loginCheck.php";
+
+//Make cookies work on localhost or server
 $domain = ($_SERVER['HTTP_HOST'] != 'localhost') ? $_SERVER['HTTP_HOST'] : false;
 
+//This triggers if the submit button is pressed
+//Purpose: Check if the login details provided exist in the database, set cookies, set session, log failed login attempts
 if(isset($_POST["submitButton"])){
     $email = $_POST["InputEmail1"];
     $password = $_POST["InputPassword"];
-    //$db = new DatabaseOperations();
-    if (isset($_POST["InputCheck"]) and $User->LoginUser($email, $password) == true) {
+    if($database->UserExists($email, $password)){
         $_SESSION['email'] = $email;
         $_SESSION['pwd'] = $password;
-        setcookie('login_email', $email, time()+60*60*24*365, '/', $domain, false);
-        setcookie('login_password', $password, time()+60*60*24*365, '/', $domain, false);
-        header("Location: rekening.php");
-    }elseif($User->LoginUser($email, $password) == true){
-        $_SESSION['email'] = $email;
-        $_SESSION['pwd'] = $password;
+        $_SESSION['userID'] = $database->getID($email, $password);
+        if (isset($_POST["InputCheck"])) {
+            setcookie('login_email', $email, strtotime('+1 Year'), '/', $domain, false);
+            setcookie('login_password', $password, strtotime('+1 Year'), '/', $domain, false);
+        }
         header("Location: rekening.php");
     }else{
-        error_log( "Login failed using email: $email and password: $password" );
+        error_log("Login failed using email: $email and password: $password");
         echo"wrong login";
     }
 }
 ?>
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <!-- Required meta tags -->
@@ -41,13 +42,13 @@ if(isset($_POST["submitButton"])){
     <div id="content" class="border border-secondary rounded">
         <form method="post">
             <div class="form-group">
-                <label for="InputEmail">Email address</label>
-                <input type="email" class="form-control" id="InputEmail1" aria-describedby="emailHelp" placeholder="Enter email" name="InputEmail1">
+                <label for="InputEmail1">Email address</label>
+                <input type="email" class="form-control" id="InputEmail1" aria-describedby="emailHelp" placeholder="Enter email" name="InputEmail1" required>
                 <small id="emailHelp" class="form-text text-muted">We'll never share your email with anyone else.</small>
             </div>
             <div class="form-group">
                 <label for="InputPassword1">Password</label>
-                <input type="password" class="form-control" id="InputPassword1" placeholder="Password" name="InputPassword">
+                <input type="password" class="form-control" id="InputPassword1" placeholder="Password" name="InputPassword" required>
             </div>
             <div class="form-check">
                 <input type="checkbox" class="form-check-input" id="Check1" name="InputCheck">
@@ -56,7 +57,6 @@ if(isset($_POST["submitButton"])){
             <button type="submit" class="btn btn-primary" name="submitButton">Submit</button>
             <a class="btn btn-secondary" href="register.php" role="button">Register</a>
         </form>
-
     </div>
 </div>
 <!-- Optional JavaScript -->
@@ -66,25 +66,3 @@ if(isset($_POST["submitButton"])){
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/js/bootstrap.min.js" integrity="sha384-uefMccjFJAIv6A+rW+L4AHf99KvxDjWSu1z9VI8SKNVmz4sk7buKt/6v9KI65qnm" crossorigin="anonymous"></script>
 </body>
 </html>
-<?php
-
-if(isset($_SESSION['email']) and isset($_SESSION['pwd'])){
-
-    //$db = new DatabaseOperations();
-    if ($User->LoginUser($_SESSION['email'], $_SESSION['pwd']) == true) {
-        header("Location: rekening.php");
-        //echo"Session check triggered";
-    }else{
-        echo"Session detection triggered without right login";
-    }
-}
-if(isset($_COOKIE['login_email']) and isset($_COOKIE['login_password'])){
-    if ($User->LoginUser($_COOKIE['login_email'], $_COOKIE['login_password']) == true) {
-        $_SESSION['email'] = $_COOKIE['login_email'];
-        $_SESSION['pwd'] = $_COOKIE['login_password'];
-        ?> <script>window.location.replace("rekening.php");</script> <?php
-        //echo"Session cookie check triggered";
-    }else{
-        echo"Session cookie detection triggered without right login";
-    }
-}

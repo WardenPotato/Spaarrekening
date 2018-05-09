@@ -11,7 +11,7 @@ namespace Database {
 
     class DBConnection extends \Settings
     {
-        public $pdo;
+        protected $pdo;
 
         public function __construct()
         {
@@ -29,11 +29,11 @@ namespace Database {
     class DatabaseOperations extends DBConnection
     {
 
-        public function registerUser(string $email, string $password): bool
+        public function registerUser(string $email, string $password, string $firstName, string $lastName): bool
         {
             if (!$this->userExists($email, $password)) {
-                $stmt = $this->pdo->prepare("INSERT INTO login (email, password) VALUES(:email,:password)");
-                return $stmt->execute(['email' => $email, 'password' => $password]) ? true : false;
+                $stmt = $this->pdo->prepare("INSERT INTO login (email, password, first_name, last_name) VALUES(:email,:password,:first_name,:last_name)");
+                return $stmt->execute(['email' => $email, 'password' => $password, 'first_name' => $firstName, 'last_name' => $lastName]) ? true : false;
             }
             return false;
         }
@@ -49,6 +49,34 @@ namespace Database {
             $stmt = $this->pdo->prepare("SELECT email FROM login WHERE email = :email AND password = :password");
             $stmt->execute(['email' => $email, 'password' => $password]);
             return $stmt->rowCount() == 1 ? true : false;
+        }
+
+        public function getEmail(int $userID): string
+        {
+            $stmt = $this->pdo->prepare("SELECT email FROM login WHERE idlogin = :loginID");
+            $stmt->execute(['loginID' => $userID]);
+            return $stmt->fetchColumn();
+        }
+
+        public function getFirstName(int $userID): string
+        {
+            $stmt = $this->pdo->prepare("SELECT first_name FROM login WHERE idlogin = :loginID");
+            $stmt->execute(['loginID' => $userID]);
+            return $stmt->fetchColumn();
+        }
+
+        public function getLastName(int $userID): string
+        {
+            $stmt = $this->pdo->prepare("SELECT last_name FROM login WHERE idlogin = :loginID");
+            $stmt->execute(['loginID' => $userID]);
+            return $stmt->fetchColumn();
+        }
+
+        public function getID($email, $password): int
+        {
+            $stmt = $this->pdo->prepare("SELECT idlogin FROM login WHERE email = :email AND password = :password");
+            $stmt->execute(['email' => $email, 'password' => $password]);
+            return $stmt->fetchColumn();
         }
 
         public function getAccounts(int $loginID): array
