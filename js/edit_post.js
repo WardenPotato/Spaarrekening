@@ -13,4 +13,4 @@ window.onload=function() {
         request.send(new FormData(form));
         ev.preventDefault();
     }, false)
-}
+};

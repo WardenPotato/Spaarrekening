@@ -126,6 +126,7 @@ $User = new \User\User($userID);
                                     <?php
                                         //Get all accounts and echo them as options
                                         $accounts = $User->getAccounts();
+                                        /* @var $account \User\BankAccount */
                                         foreach ($accounts as $index => $account) {
                                             echo "<option value='" . $account->getID() . "'>" . $account->getName() . "</option>";
                                         }
