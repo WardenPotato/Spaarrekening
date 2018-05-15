@@ -168,15 +168,30 @@ $User = new \User\User($userID);
         <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/js/bootstrap.min.js"
                 integrity="sha384-uefMccjFJAIv6A+rW+L4AHf99KvxDjWSu1z9VI8SKNVmz4sk7buKt/6v9KI65qnm"
                 crossorigin="anonymous"></script>
+
+    </div>
+
+    <div class="container-fluid border border-secondary rounded" id="accounts">
+        <?php
+        $accounts = $User->getAccounts();
+        /* @var $account \User\BankAccount */
+        foreach ($accounts as $index => $account) {
+            //echo "<option value='" . $account->getID() . "'>" . $account->getName() . "</option>";
+            echo'<div class="container-fluid border border-secondary rounded account">';
+            echo"<a>Name: " . $account->getName() . "</a>";
+            echo"<a id='balance'>$" . $account->getBalance() . "</a>";
+            echo'</div>';
+        }
+        ?>
     </div>
 </div>
 </body>
 </html>
 <?php
 //Prints all accounts of logged in user
-echo"<div id='accountdiv'>";
-    $User->printAccounts();
-echo"</div>";
+//echo"<div id='accountdiv'>";
+//    $User->printAccounts();
+//echo"</div>";
 
 //Runs if account creation button is pressed
 if(isset($_POST["AccountSubmit"]) and isset($_POST["AccountName"])){

@@ -31,5 +31,12 @@ if(isset($_POST["editAccountSelection1"]) and isset($_POST["editAccountSelection
     }
 }
 
-//Print the accounts
-$User->printAccounts();
+//Display the accounts
+$accounts = $User->getAccounts();
+/* @var $account \User\BankAccount */
+foreach ($accounts as $index => $account) {
+    echo'<div class="container-fluid border border-secondary rounded account">';
+    echo"<a>Name: " . $account->getName() . "</a>";
+    echo"<a id='balance'>$" . $account->getBalance() . "</a>";
+    echo'</div>';
+}

@@ -7,7 +7,7 @@ window.onload=function() {
 
         request.onreadystatechange = function () {//Call a function when the state changes.
             if (request.readyState === 4 && request.status === 200) {
-                document.getElementById("accountdiv").innerHTML = request.responseText;
+                document.getElementById("accounts").innerHTML = request.responseText;
             }
         };
         request.send(new FormData(form));
