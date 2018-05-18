@@ -31,7 +31,7 @@ body {
     margin-top: 20px;
 }
 .account:first-child{
-    margin-top: 0px;
+    margin-top: 0;
 }
 #balance{
     color: green;
@@ -39,5 +39,5 @@ body {
     float: right;
 }
 #accounts p{
-    margin: 0 0 0 0px;
+    margin: 0 0 0 0;
 }
